@@ -8,10 +8,10 @@ class DCMotor:
 
     """
     def __init__(self):
-        self._ENA = 33
-        self._IN1 = 35
-        self._IN2 = 37
-        GPIO.setmode(GPIO.BOARD)
+        self._ENA = "GPIO_PE6"
+        self._IN1 = "DAP4_FS"
+        self._IN2 = "SPI2_MOSI"
+        GPIO.setmode(GPIO.TEGRA_SOC)
         GPIO.setup(self._ENA, GPIO.OUT, initial=GPIO.LOW)
         GPIO.setup(self._IN1, GPIO.OUT, initial=GPIO.LOW)
         GPIO.setup(self._IN2, GPIO.OUT, initial=GPIO.LOW)
