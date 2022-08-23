@@ -13,21 +13,22 @@ class ServoMotor:
     """
     def __init__(self, channel):
         i2c = busio.I2C(board.SCL, board.SDA)
+        self.channel = channel
         self._pca = PCA9685(i2c)
         self.motor = ServoKit(channels=16)
         self._set_actuation_range(50)
         self._set_pca_frequency(100)
-        self._set_pca_duty_cycle(0xffff, channel=channel)
+        self._set_pca_duty_cycle(0xffff)
 
-    def set_rotation_angle(self, channel, angle):
-        self.motor.servo[channel].angle = angle
+    def set_rotation_angle(self, angle):
+        self.motor.servo[self.channel].angle = angle
         time.sleep(0.005)
 
     def _set_pca_frequency(self, freq):
         self._pca.frequency = freq
 
-    def _set_pca_duty_cycle(self, dc, channel):
-        ch = self._pca.channels[channel]
+    def _set_pca_duty_cycle(self, dc):
+        ch = self._pca.channels[self.channel]
         ch.duty_cycle = dc
 
     def _set_actuation_range(self, act_range):
