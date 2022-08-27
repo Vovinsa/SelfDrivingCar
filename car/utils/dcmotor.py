@@ -8,6 +8,8 @@ class DCMotor:
 
     """
     def __init__(self):
+        self.dc = 0
+
         GPIO.setmode(GPIO.TEGRA_SOC)
         self._ENA = "GPIO_PE6"
         self._IN1 = "DAP4_FS"
@@ -41,3 +43,4 @@ class DCMotor:
         elif dc < 60:
             dc = 60
         self.pwm.ChangeDutyCycle(dc)
+        self.dc = dc
