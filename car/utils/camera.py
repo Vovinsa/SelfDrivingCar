@@ -1,4 +1,7 @@
 import cv2
+import numpy as np
+
+from threading import Thread
 
 
 class Camera:
@@ -14,55 +17,54 @@ class Camera:
                  display_width=1280,
                  display_height=720,
                  framerate=30,
-                 flip_method=0, ):
-        self.running = True
-        self.gstreamer = self.gstreamer_pipeline(sensor_id=sensor_id,
-                                                 capture_width=capture_width,
-                                                 capture_height=capture_height,
-                                                 display_width=display_width,
-                                                 display_height=display_height,
-                                                 framerate=framerate,
-                                                 flip_method=flip_method)
-        self.cap = cv2.VideoCapture(self.gstreamer, cv2.CAP_GSTREAMER)
-        assert self.cap.isOpened(), "Unable to open camera"
+                 flip_method=0):
+        self.sensor_id = sensor_id
+        self.capture_width = capture_width
+        self.capture_height = capture_height
+        self.display_width = display_width
+        self.display_height = display_height
+        self.framerate = framerate
+        self.flip_method = flip_method
+
+        self.frame = np.empty((self.display_height, self.display_width, 3), dtype=np.uint8)
+
+        try:
+            self.cap = cv2.VideoCapture(self._gstreamer_pipeline(), cv2.CAP_GSTREAMER)
+            self._start()
+        except:
+            self._stop()
+            raise RuntimeError("Error while initializing camera")
 
     def capture(self):
-        if self.running:
+        while True:
             ret, frame = self.cap.read()
-            if ret is None:
-                raise RuntimeError("Unable to get a frame")
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            return frame
+            if ret:
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                self.frame = frame
+            else:
+                raise RuntimeError("Error while reading a frame")
 
-    def stop_capture(self):
-        self.running = False
+    def _start(self):
+        self.thread = Thread(target=self.capture)
+        self.thread.start()
+
+    def _stop(self):
         self.cap.release()
+        self.thread.join()
 
-    @staticmethod
-    def gstreamer_pipeline(
-            sensor_id,
-            capture_width,
-            capture_height,
-            display_width,
-            display_height,
-            framerate,
-            flip_method,
-    ):
-        return (
-                "nvarguscamerasrc sensor-id=%d !"
+    def _gstreamer_pipeline(self):
+        return ("nvarguscamerasrc sensor-id=%d !"
                 "video/x-raw(memory:NVMM), width=(int)%d, height=(int)%d, framerate=(fraction)%d/1 ! "
                 "nvvidconv flip-method=%d ! "
                 "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
                 "videoconvert ! "
                 "video/x-raw, format=(string)BGR ! appsink"
-                % (
-                    sensor_id,
-                    capture_width,
-                    capture_height,
-                    framerate,
-                    flip_method,
-                    display_width,
-                    display_height,
+                % (self.sensor_id,
+                   self.capture_width,
+                   self.capture_height,
+                   self.framerate,
+                   self.flip_method,
+                   self.display_width,
+                   self.display_height
+                   )
                 )
-        )
-
