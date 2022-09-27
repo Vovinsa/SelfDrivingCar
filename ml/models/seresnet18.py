@@ -98,11 +98,11 @@ class SEResNetBlock(nn.Module):
         return out
 
 
-class SEReSNet(nn.Module):
+class SEResNet(nn.Module):
     def __init__(self, block=SEResNetBlock, layers=[2, 2, 2, 2], groups=1, reduction=16,
                  in_channels=3, inplanes=64, downsample_kernel_size=1,
                  downsample_padding=0, num_classes=1000, global_pool="avg"):
-        super(SEReSNet, self).__init__()
+        super(SEResNet, self).__init__()
         self.inplanes = inplanes
         self.num_classes = num_classes
 
@@ -239,9 +239,9 @@ def load_pretrained(model, default_cfg, num_classes=1000, in_channels=3, filter_
     model.load_state_dict(state_dict, strict=strict)
 
 
-def seresnet18(num_classes=1000, in_channels=3, pretrained=True, **kwargs):
+def make_seresnet18(num_classes=1000, in_channels=3, pretrained=True, **kwargs):
     cfg = default_cfg["seresnet18"]
-    model = SEReSNet(SEResNetBlock, [2, 2, 2, 2], groups=1, reduction=16,
+    model = SEResNet(SEResNetBlock, [2, 2, 2, 2], groups=1, reduction=16,
                      inplanes=64,
                      downsample_kernel_size=1, downsample_padding=0,
                      num_classes=num_classes, in_channels=in_channels, **kwargs)
@@ -254,7 +254,9 @@ def seresnet18(num_classes=1000, in_channels=3, pretrained=True, **kwargs):
 import torch
 import time
 
-model = seresnet18().to("cuda")
+model = make_seresnet18().to("cuda")
+# print(sum(p.numel() for p in model.parameters()))
+
 while True:
     inp = torch.rand(1, 3, 224, 224).to("cuda")
     start = time.time()
