@@ -44,6 +44,13 @@ class Camera:
             else:
                 raise RuntimeError("Error while reading a frame")
 
+    def update(self):
+        ret, frame = self.cap.read()
+        if ret:
+            return frame
+        else:
+            raise RuntimeError("Error while reading a frame")
+
     def _start(self):
         self.thread = Thread(target=self.capture)
         self.thread.start()
