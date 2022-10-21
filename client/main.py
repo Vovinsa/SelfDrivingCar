@@ -15,7 +15,7 @@ def connect():
 def connect_error():
     time.sleep(5000)
     print("The connection failed!")
-    sio.connect("https://7153-134-17-160-209.eu.ngrok.io/")
+    sio.connect("http://soskov.online:5000", wait_timeout=10)
 
 
 @sio.event
@@ -28,7 +28,7 @@ def on_message(data):
     print("Price Data ", data)
 
 
-sio.connect("https://7153-134-17-160-209.eu.ngrok.io/")
+sio.connect("http://soskov.online:5000", wait_timeout=10)
 
 
 @sio.event
@@ -38,8 +38,9 @@ def disconnect():
     print("disconnect")
     try:
         sio.disconnect()
-        sio.connect("https://7153-134-17-160-209.eu.ngrok.io/")
+        sio.connect("http://soskov.online:5000", wait_timeout=10)
     except:
         print("zxc")
         time.sleep(5)
-        sio.connect("https://7153-134-17-160-209.eu.ngrok.io/")
+        sio.connect("http://soskov.online:5000", wait_timeout=10)
+
