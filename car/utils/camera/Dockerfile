@@ -10,3 +10,5 @@ RUN apt-get update
 
 RUN apt-get install -y python3-pip && pip3 install --upgrade pip
 RUN apt-get install -y python3-opencv
+
+EXPOSE 202
