@@ -25,7 +25,6 @@ class ServoMotor:
     def set_rotation_angle(self, angle):
         self.motor.servo[self.channel].angle = angle
         self.angle = angle
-        time.sleep(0.005)
 
     def _set_pca_frequency(self, freq):
         self._pca.frequency = freq
