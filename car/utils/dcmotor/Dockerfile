@@ -11,5 +11,3 @@ RUN apt-get install -y python3-pip && pip3 install --upgrade pip
 
 # Setting up Servo and DC Motor control
 RUN pip3 install Jetson.GPIO
-
-EXPOSE 200

@@ -13,5 +13,3 @@ RUN apt-get install -y python3-pip && pip3 install --upgrade pip
 # Setting up Servo and DC Motor control
 RUN pip3 install Jetson.GPIO
 RUN pip3 install adafruit-circuitpython-servokit==1.3.8
-
-EXPOSE 201
