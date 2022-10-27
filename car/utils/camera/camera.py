@@ -1,8 +1,6 @@
 import cv2
 import numpy as np
 
-from threading import Thread
-
 
 class Camera:
     """
@@ -30,34 +28,21 @@ class Camera:
 
         try:
             self.cap = cv2.VideoCapture(self._gstreamer_pipeline(), cv2.CAP_GSTREAMER)
-            self._start()
         except:
-            self._stop()
+            self.stop()
             raise RuntimeError("Error while initializing camera")
-
-    def capture(self):
-        while True:
-            ret, frame = self.cap.read()
-            if ret:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                self.frame = frame
-            else:
-                raise RuntimeError("Error while reading a frame")
 
     def update(self):
         ret, frame = self.cap.read()
         if ret:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            self.frame = frame
             return frame
         else:
             raise RuntimeError("Error while reading a frame")
 
-    def _start(self):
-        self.thread = Thread(target=self.capture)
-        self.thread.start()
-
-    def _stop(self):
+    def stop(self):
         self.cap.release()
-        self.thread.join()
 
     def _gstreamer_pipeline(self):
         return ("nvarguscamerasrc sensor-id=%d !"
