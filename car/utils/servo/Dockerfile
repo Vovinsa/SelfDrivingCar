@@ -12,8 +12,8 @@ RUN apt-get update && \
 RUN pip3 install --upgrade pip \
     --upgrade setuptools \
     --upgrade future \
-    adafruit-circuitpython-servokit \
+    adafruit-circuitpython-servokit==1.3.8 \
     Jetson.GPIO \
-    kafka-python \
+    kafka-python==2.0.2
 
 CMD ["python3", "run.py"]

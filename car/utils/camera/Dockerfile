@@ -72,7 +72,7 @@ RUN mkdir -p opencv-${OPENCV_VERSION}/build && cd opencv-${OPENCV_VERSION}/build
     -D WITH_OPENGL=ON .. && \
     make -j1 && make install
 
-RUN pip3 install kafka-python
+RUN pip3 install kafka-python==2.0.2
 
 WORKDIR /usr/src/car/utils/camera
 
