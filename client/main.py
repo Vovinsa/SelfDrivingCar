@@ -22,15 +22,13 @@ def connect():
 @sio.event
 def connect_error():
     print("The connection failed!")
-    sio.connect("http://soskov.online:5000")
+    sio.connect("http://soskov.online:5000", wait_timeout=10)
 
 
 @sio.on("chat")
 def on_message(data):
     angle = data["rotate"]
     speed = data["speed"]
-
-    print(angle)
 
     producer.send(
         "motors",
@@ -43,10 +41,10 @@ def disconnect():
     print("disconnect")
     try:
         sio.disconnect()
-        sio.connect("http://soskov.online:5000")
+        sio.connect("http://soskov.online:5000", wait_timeout=10)
     except:
         print("zxc")
-        sio.connect("http://soskov.online:5000")
+        sio.connect("http://soskov.online:5000", wait_timeout=10)
 
 
 sio.connect("http://soskov.online:5000", wait_timeout=10)
