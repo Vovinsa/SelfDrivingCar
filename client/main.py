@@ -1,8 +1,16 @@
-import socketio
-import time
+from kafka import KafkaProducer
 
-# standard Python
+import socketio
+
+import json
+
+
 sio = socketio.Client()
+producer = KafkaProducer(
+    bootstrap_servers=["kafka:9092"],
+    value_serializer=lambda x: json.dumps(x).encode("ascii"),
+    api_version=(0, 10, 2)
+)
 
 
 @sio.event
@@ -13,34 +21,32 @@ def connect():
 
 @sio.event
 def connect_error():
-    time.sleep(5000)
     print("The connection failed!")
-    sio.connect("http://soskov.online:5000", wait_timeout=10)
-
-
-@sio.event
-def message(data):
-    print("I received a message!")
+    sio.connect("http://soskov.online:5000")
 
 
 @sio.on("chat")
 def on_message(data):
-    print("Price Data ", data)
+    angle = data["rotate"]
+    speed = data["speed"]
 
+    print(angle)
 
-sio.connect("http://soskov.online:5000", wait_timeout=10)
+    producer.send(
+        "motors",
+        value={"speed": speed, "rotation_angle": angle}
+    )
 
 
 @sio.event
 def disconnect():
-    # perform some user management stuff
-    # perform some cleaning as well
     print("disconnect")
     try:
         sio.disconnect()
-        sio.connect("http://soskov.online:5000", wait_timeout=10)
+        sio.connect("http://soskov.online:5000")
     except:
         print("zxc")
-        time.sleep(5)
-        sio.connect("http://soskov.online:5000", wait_timeout=10)
+        sio.connect("http://soskov.online:5000")
 
+
+sio.connect("http://soskov.online:5000", wait_timeout=10)

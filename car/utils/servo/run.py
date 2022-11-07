@@ -15,4 +15,3 @@ consumer = KafkaConsumer(
 for msg in consumer:
     angle = msg.value["rotation_angle"]
     servo_motor.set_rotation_angle(angle=angle)
-    print(msg)
