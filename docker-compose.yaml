@@ -32,9 +32,8 @@ services:
     build: ./client/
     networks:
       - kafka_net
-#    restart: always
   servo:
-    build: car/utils/servo/
+    build: ./car/utils/servo/
     networks:
       - kafka_net
     volumes:
@@ -43,20 +42,8 @@ services:
       - /sys/devices/:/sys/devices/
       - /sys/class/gpio:/sys/class/gpio
     privileged: true
-#  dcmotor:
-#    build: ./car/utils/dcmotor/
-#    networks:
-#      - kafka_net
-#    volumes:
-#      - /proc/device-tree/compatible:/proc/device-tree/compatible
-#      - /proc/device-tree/chosen:/proc/device-tree/chosen
-#      - /sys/devices/:/sys/devices/
-#      - /sys/class/gpio:/sys/class/gpio
-#    privileged: true
 #  camera:
-#    build: ./car/utils/camera/
-#    networks:
-#      - kafka_net
+#    build: ./car/utils/camera
 #    volumes:
 #      - /dev/video0:/dev/video0
 #      - /tmp/argus_socket:/tmp/argus_socket
@@ -66,4 +53,3 @@ services:
 
 networks:
   kafka_net:
-    name: kafka_network
