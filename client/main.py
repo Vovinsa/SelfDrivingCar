@@ -16,7 +16,7 @@ producer = KafkaProducer(
 @sio.event
 def connect():
     print("I'm connected!")
-    sio.emit("chat", {"x": 12, "y": 42, "car_id": 2, "sin": 0.2, "is_car": True})
+    sio.emit("chat", {"rotate": 0, "speed": 0, "car_id": 2, "is_car": True})
 
 
 @sio.event
@@ -47,4 +47,5 @@ def disconnect():
         sio.connect("http://soskov.online:5000", wait_timeout=10)
 
 
-sio.connect("http://soskov.online:5000", wait_timeout=10)
+if __name__ == "__main__":
+    sio.connect("http://soskov.online:5000", wait_timeout=10)
