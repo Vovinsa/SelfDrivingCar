@@ -1,14 +1,15 @@
 # Base l4t container with Jetpack 5.0.2
-FROM nvcr.io/nvidia/l4t-base:r32.7.1
+FROM nvcr.io/nvidia/l4t-base:r34.1
 
-WORKDIR /usr/src/car/utils
+WORKDIR /usr/src/car/utils/dcmotor/
 
-ADD .. /usr/src/car/utils
+ADD . /usr/src/car/utils/dcmotor/
 
 RUN apt-get update && \
-    apt-get install -y python3 pip
+    apt-get install -y python3-pip
 
-RUN pip3 install --upgrade pip
+RUN pip3 install --upgrade pip \
+    kafka-python==2.0.2 \
+    Jetson.GPIO
 
-# Setting up Servo and DC Motor control
-RUN pip3 install Jetson.GPIO
+CMD ["python3", "run.py"]
