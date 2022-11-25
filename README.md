@@ -1,3 +1,6 @@
 ### Self Driving Car (toy car :))
 
-Will worked on Jetson Nano
+To run a car:
+```
+docker-compose up -d --build
+```
