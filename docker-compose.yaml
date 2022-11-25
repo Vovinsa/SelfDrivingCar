@@ -32,8 +32,19 @@ services:
     build: ./client/
     networks:
       - kafka_net
+    restart: always
   servo:
     build: ./car/utils/servo/
+    networks:
+      - kafka_net
+    volumes:
+      - /proc/device-tree/compatible:/proc/device-tree/compatible
+      - /proc/device-tree/chosen:/proc/device-tree/chosen
+      - /sys/devices/:/sys/devices/
+      - /sys/class/gpio:/sys/class/gpio
+    privileged: true
+  dcmotor:
+    build: ./car/utils/dcmotor/
     networks:
       - kafka_net
     volumes:
