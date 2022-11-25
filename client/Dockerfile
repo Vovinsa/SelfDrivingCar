@@ -9,7 +9,7 @@ RUN apt-get update
 
 RUN apt-get install -y python3-pip && pip3 install --upgrade pip
 
-RUN pip3 install python-socketio==5.7.1 \
+RUN pip3 install python-socketio==5.7.2 \
     websocket-client==1.3.1  \
     requests==2.18.4 \
     kafka-python==2.0.2
