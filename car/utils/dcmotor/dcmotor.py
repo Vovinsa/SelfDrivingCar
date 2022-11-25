@@ -23,12 +23,12 @@ class DCMotor:
         GPIO.setup(self._IN2, GPIO.OUT, initial=GPIO.LOW)
 
     def stop(self):
+        self.pwm.stop()
         GPIO.output(self._IN1, GPIO.LOW)
         GPIO.output(self._IN2, GPIO.LOW)
 
     def backward(self, speed):
         self._change_duty_cycle(speed)
-        print(self.dc)
         GPIO.output(self._IN1, GPIO.HIGH)
         GPIO.output(self._IN2, GPIO.LOW)
 
@@ -36,9 +36,6 @@ class DCMotor:
         self._change_duty_cycle(speed)
         GPIO.output(self._IN1, GPIO.LOW)
         GPIO.output(self._IN2, GPIO.HIGH)
-
-    def stop_motor(self):
-        self.pwm.stop()
 
     def _change_duty_cycle(self, dc):
         self.pwm.ChangeDutyCycle(dc)
