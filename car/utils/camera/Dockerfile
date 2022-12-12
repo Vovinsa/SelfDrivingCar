@@ -66,10 +66,10 @@ RUN mkdir -p opencv-${OPENCV_VERSION}/build && cd opencv-${OPENCV_VERSION}/build
     -D BUILD_opencv_python3=ON \
     -D CMAKE_BUILD_TYPE=RELEASE \
     -D CMAKE_INSTALL_PREFIX=/usr/local/ \
-    -D WITH_FFMPEG=ON \
+    -D WITH_FFMPEG=OFF \
     -D WITH_GSTREAMER=ON \
     -D WITH_LIBV4L=ON \
-    -D WITH_OPENGL=ON .. && \
+    -D WITH_OPENGL=OFF .. && \
     make -j1 && make install
 
 RUN pip3 install kafka-python==2.0.2
