@@ -2,10 +2,14 @@ from kafka import KafkaProducer
 
 from camera import Camera
 
+import pickle
+
 
 if __name__ == "__main__":
     producer = KafkaProducer(
-        bootstrap_servers=["kafka:9092"]
+        bootstrap_servers=["kafka:9092"],
+        value_serializer=lambda x: pickle.dumps(x),
+        api_version=(0, 10, 2)
     )
     cam = Camera(capture_width=1280, capture_height=720,
                  display_width=224, display_height=224, framerate=30)
