@@ -16,9 +16,9 @@ if __name__ == "__main__":
 
     for msg in consumer:
         speed = msg.value["speed"]
-        if speed == 1:
+        if speed > 0:
             dc_motor.forward(100)
-        elif speed == -1:
+        elif speed < 0:
             dc_motor.backward(100)
         else:
             dc_motor.forward(0)
