@@ -10,6 +10,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "22181:2181"
+    restart: always
   kafka:
     image: confluentinc/cp-kafka:7.2.2
     networks:
@@ -28,6 +29,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    restart: always
   client:
     build: ./client/
     networks:
@@ -43,6 +45,7 @@ services:
       - /sys/devices/:/sys/devices/
       - /sys/class/gpio:/sys/class/gpio
     privileged: true
+    restart: always
   dcmotor:
     build: ./car/utils/dcmotor/
     networks:
@@ -53,6 +56,7 @@ services:
       - /sys/devices/:/sys/devices/
       - /sys/class/gpio:/sys/class/gpio
     privileged: true
+    restart: always
   camera:
     build: ./car/utils/camera
     volumes:
@@ -61,6 +65,7 @@ services:
     devices:
       - /dev/video0
     runtime: nvidia
+    restart: always
 
 networks:
   kafka_net:
