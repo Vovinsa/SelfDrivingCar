@@ -1,16 +1,10 @@
 from kafka import KafkaProducer
 
 import socketio
-
 import json
 
 
 sio = socketio.Client()
-producer = KafkaProducer(
-    bootstrap_servers=["kafka:9092"],
-    value_serializer=lambda x: json.dumps(x).encode("ascii"),
-    api_version=(0, 10, 2)
-)
 
 
 @sio.event
@@ -48,4 +42,10 @@ def disconnect():
 
 
 if __name__ == "__main__":
+    producer = KafkaProducer(
+        bootstrap_servers=["kafka:9092"],
+        value_serializer=lambda x: json.dumps(x).encode("ascii"),
+        api_version=(0, 10, 2)
+    )
     sio.connect("http://soskov.online:5000", wait_timeout=10)
+    sio.wait()
