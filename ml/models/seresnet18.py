@@ -249,18 +249,3 @@ def make_seresnet18(num_classes=1000, in_channels=3, pretrained=True, **kwargs):
     if pretrained:
         load_pretrained(model, cfg, num_classes, in_channels)
     return model
-
-
-import torch
-import time
-
-model = make_seresnet18().to("cuda")
-# print(sum(p.numel() for p in model.parameters()))
-
-while True:
-    inp = torch.rand(1, 3, 224, 224).to("cuda")
-    start = time.time()
-    print(model(inp).size())
-    stop = time.time() - start
-    print(stop)
-
