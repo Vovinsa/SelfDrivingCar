@@ -59,6 +59,8 @@ services:
     restart: always
   camera:
     build: ./car/utils/camera
+    networks:
+      - kafka_net
     volumes:
       - /dev/video0:/dev/video0
       - /tmp/argus_socket:/tmp/argus_socket
