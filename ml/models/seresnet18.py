@@ -99,10 +99,12 @@ class SEResNetBlock(nn.Module):
 
 
 class SEResNet(nn.Module):
-    def __init__(self, block=SEResNetBlock, layers=[2, 2, 2, 2], groups=1, reduction=16,
+    def __init__(self, block=SEResNetBlock, layers=None, groups=1, reduction=16,
                  in_channels=3, inplanes=64, downsample_kernel_size=1,
                  downsample_padding=0, num_classes=1000, global_pool="avg"):
         super(SEResNet, self).__init__()
+        if layers is None:
+            layers = [2, 2, 2, 2]
         self.inplanes = inplanes
         self.num_classes = num_classes
 
