@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:12.13-alpine3.17
+    container_name: mlflow_db
+    environment:
+      - POSTGRES_DB=mlflow_db
+      - POSTGRES_USER=mlflow
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - "6543:5432"
+    volumes:
+      - ./db_data/:/var/lib/postgresql/data/
+    restart: always
+  mlflow:
+    build: .
+    container_name: mlflow_server
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./mlflow_data/:/mlruns/
+    command: mlflow server --backend-store-uri postgresql://mlflow:123456@db:5432/mlflow_db --default-artifact-root /mlruns --host 0.0.0.0
+    depends_on:
+      - db
+    restart: always
