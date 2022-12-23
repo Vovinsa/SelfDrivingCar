@@ -7,11 +7,8 @@ from .seresnet18 import make_seresnet18
 class BranchedNetwork(nn.Module):
     def __init__(self, emb_size, num_commands, num_meas):
         super(BranchedNetwork, self).__init__()
-
         self.hard_tanh = nn.Hardtanh(-1, 1)
-
         self.backbone = make_seresnet18(num_classes=emb_size)
-
         self.action_models = nn.ModuleList([
             nn.Sequential(
                 nn.Linear(emb_size * 2, emb_size),
@@ -20,7 +17,6 @@ class BranchedNetwork(nn.Module):
             )
             for _ in range(num_commands)
         ])
-
         self.meas_embs = nn.Linear(num_meas, emb_size)
 
     def forward(self, img, measurements, command):
