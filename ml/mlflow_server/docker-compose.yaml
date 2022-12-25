@@ -20,7 +20,10 @@ services:
       - "5001:5000"
     volumes:
       - ./mlflow_data/:/mlruns/
-    command: mlflow server --backend-store-uri postgresql://mlflow:123456@db:5432/mlflow_db --default-artifact-root /mlruns --host 0.0.0.0
+    command: mlflow server --backend-store-uri postgresql://mlflow:123456@db:5432/mlflow_db
+      --default-artifact-root /mlruns 
+      --artifacts-destination /mlruns
+      --host 0.0.0.0
     depends_on:
       - db
     restart: always
