@@ -1,9 +1,0 @@
-.DS_Store
-.idea
-__pycache__
-
-ml/weights
-
-ml/mlflow_server/db_data
-ml/mlflow_server/mlflow_data
-ml/models/onnx

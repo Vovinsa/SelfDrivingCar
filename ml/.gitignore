@@ -1,0 +1,11 @@
+/data
+
+.DS_Store
+.idea
+__pycache__
+
+weights
+
+mlflow_server/db_data
+mlflow_server/mlflow_data
+models/onnx
