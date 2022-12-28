@@ -3,7 +3,6 @@
 __pycache__
 
 ml/weights
-ml/data
 
 ml/mlflow_server/db_data
 ml/mlflow_server/mlflow_data
