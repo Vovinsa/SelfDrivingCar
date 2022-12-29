@@ -43,9 +43,9 @@ def train_epoch(model, dataloader, optimizer, criterion, device):
     epoch_loss = 0
     for batch in dataloader:
         optimizer.zero_grad()
-        img, measurements, command = batch
-        img, measurements, command = img.to(device), measurements.to(device), command.to(device)
-        preds = model(img, measurements, command)
+        img, measurements, measurements_prev, command = batch
+        img, measurements, measurements_prev, command = img.to(device), measurements.to(device), measurements_prev.to(device), command.to(device)
+        preds = model(img, measurements_prev, command)
         preds = torch.stack(preds, dim=1).to(device)
         loss = criterion(preds, measurements)
         loss.backward()
@@ -58,9 +58,9 @@ def validate_epoch(model, dataloader, criterion, device):
     model.eval()
     valid_loss = 0
     for batch in dataloader:
-        img, measurements, command = batch
-        img, measurements, command = img.to(device), measurements.to(device), command.to(device)
-        preds = model(img, measurements, command)
+        img, measurements, measurements_prev, command = batch
+        img, measurements, measurements_prev, command = img.to(device), measurements.to(device), measurements_prev.to(device), command.to(device)
+        preds = model(img, measurements_prev, command)
         preds = torch.stack(preds, dim=1).to(device)
         loss = criterion(preds, measurements)
         valid_loss += loss.item()
@@ -68,7 +68,7 @@ def validate_epoch(model, dataloader, criterion, device):
 
 
 if __name__ == "__main__":
-    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+    DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
 
     args = parser.parse_args()
 
@@ -108,10 +108,10 @@ if __name__ == "__main__":
             os.mkdir(f"weights/{args.experiment_name}/{args.run_name}")
             logger.info(f"Create dir weights/{args.experiment_name}/{args.run_name}")
         for epoch in range(args.epochs):
-            logger.info(f"Epoch {epoch}")
+            logger.info(f"Epoch {epoch + 1}")
             train_loss = train_epoch(model, train_dataloader, optim, crit, DEVICE)
             validation_loss = validate_epoch(model, validation_dataloader, crit, DEVICE)
             torch.save(model.state_dict(), f"weights/{args.experiment_name}/{args.run_name}/epoch-{epoch+1}.pth")
             mlflow.log_metric("Train loss", train_loss, step=epoch+1)
             mlflow.log_param("lr", args.lr)
-            mlflow.log_param("epochs", args.epochs + 1)
+            mlflow.log_param("epochs", args.epochs)
