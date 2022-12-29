@@ -6,7 +6,7 @@ import mlflow
 
 import pandas as pd
 
-from dataset import CarDataset
+from utils.dataset import CarDataset
 from models.branched_network import BranchedNetwork
 
 import argparse
