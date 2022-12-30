@@ -91,7 +91,7 @@ if __name__ == "__main__":
     validation_dataset = CarDataset(validation_df, "data/images", transform)
     validation_dataloader = DataLoader(validation_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
 
-    model = BranchedNetwork(emb_size=128, num_commands=1, num_meas=2).to(DEVICE)
+    model = BranchedNetwork(emb_size=128, num_commands=1, num_meas=1).to(DEVICE)
     optim = torch.optim.AdamW(model.parameters(), lr=args.lr)
     crit = torch.nn.HuberLoss(reduction="mean")
 

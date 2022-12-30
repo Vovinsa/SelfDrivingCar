@@ -11,7 +11,7 @@ class BranchedNetwork(nn.Module):
         self.backbone = make_seresnet18(num_classes=emb_size)
         self.action_models = nn.ModuleList([
             nn.Sequential(
-                nn.Linear(emb_size * 2, emb_size),
+                nn.Linear(emb_size, emb_size),
                 nn.ReLU(),
                 nn.Linear(emb_size, 2)
             )
@@ -21,16 +21,18 @@ class BranchedNetwork(nn.Module):
 
     def forward(self, img, measurements, command):
         img_embs = self.backbone(img)
-        meas_embs = self.meas_embs(measurements)
+        # meas_embs = self.meas_embs(measurements)
+        #
+        # embs = torch.cat([img_embs, meas_embs], dim=1)
+        # preds = torch.zeros(img.shape[0], 2)
+        #
+        # i = 0
+        # for emb, c in zip(embs, command):
+        #     pred = self.action_models[c](emb)[0]
+        #     preds[i] = pred
+        #     i += 1
 
-        embs = torch.cat([img_embs, meas_embs], dim=1)
-        preds = torch.zeros(img.shape[0], 2)
-
-        i = 0
-        for emb, c in zip(embs, command):
-            pred = self.action_models[c](emb)[0]
-            preds[i] = pred
-            i += 1
+        preds = self.action_models[0](img_embs)  # test without meas embs
 
         angle = torch.sigmoid(preds[:, 0]) * 50
         speed = self.hard_tanh(preds[:, 1])
