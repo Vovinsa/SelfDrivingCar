@@ -17,6 +17,7 @@ class CarDataset(Dataset):
         img_name, rot_angle, speed = self.df.iloc[item + 1].values
         _, rot_angle_prev, speed_prev = self.df.iloc[item].values
         img = cv2.imread(os.path.join(self.path, img_name))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         if self.transform:
             img = self.transform(img)
         measurements = torch.FloatTensor([rot_angle, speed])
