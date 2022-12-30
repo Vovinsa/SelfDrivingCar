@@ -14,16 +14,13 @@ class CarDataset(Dataset):
         self.path = path
 
     def __getitem__(self, item):
-        img_name, rot_angle, speed = self.df.iloc[item + 1].values
-        _, rot_angle_prev, speed_prev = self.df.iloc[item].values
+        img_name, rot_angle, speed = self.df.iloc[item].values
         img = cv2.imread(os.path.join(self.path, img_name))
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         if self.transform:
             img = self.transform(img)
         measurements = torch.FloatTensor([rot_angle, speed])
-        measurements_prev = torch.FloatTensor([rot_angle_prev, speed_prev])
-        command = 0
-        return img, measurements, measurements_prev, command
+        return img, measurements
 
     def __len__(self):
-        return len(self.df) - 1
+        return len(self.df)

@@ -13,15 +13,12 @@ parser.add_argument("--model_path", type=str,
 
 
 def export(weights_path, model_name):
-    img = torch.rand(1, 3, 224, 224)
-    measurements = torch.FloatTensor([[25, 0]])
-    command = [0]
-    dummy_input = (img, measurements, command)
+    dummy_input = torch.rand(1, 3, 224, 224)
 
-    input_names = ["input.img", "input.meas"]
+    input_names = ["input.img"]
     output_names = ["output.angle", "output.speed"]
 
-    model = BranchedNetwork(emb_size=128, num_commands=1, num_meas=2)
+    model = BranchedNetwork(emb_size=128)
     model.load_state_dict(torch.load(weights_path))
     torch.onnx.export(model, dummy_input, model_name, input_names=input_names, output_names=output_names)
 

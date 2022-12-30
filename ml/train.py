@@ -14,7 +14,7 @@ import logging
 import os
 
 
-mlflow.set_tracking_uri("http://10.3.1.182:5001")
+mlflow.set_tracking_uri("http://192.168.100.9:5001")
 
 logger = logging.getLogger("train_self_driving")
 logging.basicConfig(level=logging.DEBUG)
@@ -43,9 +43,9 @@ def train_epoch(model, dataloader, optimizer, criterion, device):
     epoch_loss = 0
     for batch in dataloader:
         optimizer.zero_grad()
-        img, measurements, measurements_prev, command = batch
-        img, measurements, measurements_prev, command = img.to(device), measurements.to(device), measurements_prev.to(device), command.to(device)
-        preds = model(img, measurements_prev, command)
+        img, measurements = batch
+        img, measurements = img.to(device), measurements.to(device)
+        preds = model(img)
         preds = torch.stack(preds, dim=1).to(device)
         loss = criterion(preds, measurements)
         loss.backward()
@@ -58,9 +58,9 @@ def validate_epoch(model, dataloader, criterion, device):
     model.eval()
     valid_loss = 0
     for batch in dataloader:
-        img, measurements, measurements_prev, command = batch
-        img, measurements, measurements_prev, command = img.to(device), measurements.to(device), measurements_prev.to(device), command.to(device)
-        preds = model(img, measurements_prev, command)
+        img, measurements = batch
+        img, measurements = img.to(device), measurements.to(device)
+        preds = model(img)
         preds = torch.stack(preds, dim=1).to(device)
         loss = criterion(preds, measurements)
         valid_loss += loss.item()
@@ -68,7 +68,7 @@ def validate_epoch(model, dataloader, criterion, device):
 
 
 if __name__ == "__main__":
-    DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
     args = parser.parse_args()
 
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     validation_dataset = CarDataset(validation_df, "data/images", transform)
     validation_dataloader = DataLoader(validation_dataset, batch_size=args.batch_size, pin_memory=True, shuffle=False)
 
-    model = BranchedNetwork(emb_size=128, num_commands=1, num_meas=1).to(DEVICE)
+    model = BranchedNetwork(emb_size=128).to(DEVICE)
     optim = torch.optim.AdamW(model.parameters(), lr=args.lr)
     crit = torch.nn.HuberLoss(reduction="mean")
 
