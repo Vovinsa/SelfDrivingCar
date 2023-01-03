@@ -14,7 +14,7 @@ import logging
 import os
 
 
-mlflow.set_tracking_uri("http://192.168.100.9:5001")
+mlflow.set_tracking_uri("http://10.3.1.121:5001")
 
 logger = logging.getLogger("train_self_driving")
 logging.basicConfig(level=logging.DEBUG)
@@ -111,7 +111,7 @@ if __name__ == "__main__":
             logger.info(f"Epoch {epoch + 1}")
             train_loss = train_epoch(model, train_dataloader, optim, crit, DEVICE)
             validation_loss = validate_epoch(model, validation_dataloader, crit, DEVICE)
-            torch.save(model.state_dict(), f"weights/{args.experiment_name}/{args.run_name}/epoch-{epoch+1}.pth")
             mlflow.log_metric("Train loss", train_loss, step=epoch+1)
-            mlflow.log_param("lr", args.lr)
-            mlflow.log_param("epochs", args.epochs)
+        mlflow.log_param("lr", args.lr)
+        mlflow.log_param("epochs", args.epochs)
+        torch.save(model.state_dict(), f"weights/{args.experiment_name}/{args.run_name}/loss-{validation_loss}.pth")
