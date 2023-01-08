@@ -1,17 +1,25 @@
 import numpy as np
 
-import onnxruntime as ort
+# import onnxruntime as ort
 
 from kafka import KafkaProducer, KafkaConsumer
 
+from utils.infer import TensorrtModel
+
 import pickle
 import json
-
-
 import time
+import argparse
+
+
+parser = argparse.ArgumentParser(description="Run parser")
+parser.add_argument("--engine_path", type=str,
+                    help="Path to the engine", default="tensorrt_engine.engine")
 
 
 if __name__ == "__main__":
+    args = parser.parse_args()
+
     producer = KafkaProducer(
         bootstrap_servers=["localhost:29092"],
         value_serializer=lambda x: json.dumps(x).encode("ascii"),
@@ -24,28 +32,13 @@ if __name__ == "__main__":
         api_version=(0, 10, 2)
     )
 
-    ort_sess = ort.InferenceSession("../models/onnx/model.onnx", providers=["TensorrtExecutionProvider"])
-    print("A")
-
-    mean = np.array([0.485, 0.456, 0.406])
-    std = np.array([0.229, 0.224, 0.225])
+    trt_model = TensorrtModel(args.engine_path, "../models/onnx/model.onnx")
 
     for msg in consumer:
         s = time.time()
         frame = msg.value["frame"]
-        frame = frame / 255
-        frame = np.transpose(frame, (2, 0, 1))
-        frame = (frame - mean[:, None, None]) / std[:, None, None]
-        frame = np.expand_dims(frame, 0)
-
-        ort_inp = {
-            "input.img": frame.astype(np.float32),
-        }
-        ort_out = ort_sess.run(["output.angle", "output.speed"], ort_inp)
-
-        angle, speed = ort_out[0].round().item(), ort_out[1].round().item()
-        print(angle, speed)
-
+        out = trt_model(frame)
+        angle, speed = out[0].round().item(), out[1].round().item()
         producer.send(
             "motors",
             value={"rotation_angle": angle, "speed": speed}
