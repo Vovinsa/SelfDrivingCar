@@ -14,7 +14,7 @@ import logging
 import os
 
 
-mlflow.set_tracking_uri("http://10.3.1.121:5001")
+mlflow.set_tracking_uri("http://192.168.100.9:5001")
 
 logger = logging.getLogger("train_self_driving")
 logging.basicConfig(level=logging.DEBUG)
