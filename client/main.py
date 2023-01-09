@@ -16,7 +16,7 @@ def connect():
 @sio.event
 def connect_error():
     print("The connection failed!")
-    sio.connect("http://soskov.online:5000", wait_timeout=10)
+    sio.connect("http://134.17.144.36:5000", wait_timeout=10)
 
 
 @sio.on("chat")
@@ -35,10 +35,10 @@ def disconnect():
     print("disconnect")
     try:
         sio.disconnect()
-        sio.connect("http://soskov.online:5000", wait_timeout=10)
+        sio.connect("http://134.17.144.36:5000", wait_timeout=10)
     except:
         print("zxc")
-        sio.connect("http://soskov.online:5000", wait_timeout=10)
+        sio.connect("http://134.17.144.36:5000", wait_timeout=10)
 
 
 if __name__ == "__main__":
@@ -47,5 +47,5 @@ if __name__ == "__main__":
         value_serializer=lambda x: json.dumps(x).encode("ascii"),
         api_version=(0, 10, 2)
     )
-    sio.connect("http://soskov.online:5000", wait_timeout=10)
+    sio.connect("http://134.17.144.36:5000", wait_timeout=10)
     sio.wait()
