@@ -64,6 +64,7 @@ services:
     volumes:
       - /dev/video0:/dev/video0
       - /tmp/argus_socket:/tmp/argus_socket
+      - ./car/utils/camera:/usr/src/car/utils/camera
     devices:
       - /dev/video0
     runtime: nvidia
