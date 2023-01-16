@@ -27,7 +27,7 @@ class Camera:
         self.mean = np.array([0.485, 0.456, 0.406])
         self.std = np.array([0.229, 0.224, 0.225])
 
-        self.frame = np.empty((3, self.display_height, self.display_width), dtype=np.uint8)
+        self.frame = np.empty((self.display_height, self.display_width, 3), dtype=np.uint8)
 
         try:
             self.cap = cv2.VideoCapture(self._gstreamer_pipeline(), cv2.CAP_GSTREAMER)
@@ -39,8 +39,6 @@ class Camera:
         ret, frame = self.cap.read()
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame = frame / 255
-            frame = np.transpose(frame, (2, 0, 1))
             self.frame = frame
             return frame
         else:
