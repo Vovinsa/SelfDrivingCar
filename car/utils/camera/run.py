@@ -7,7 +7,7 @@ import pickle
 
 if __name__ == "__main__":
     producer = KafkaProducer(
-        bootstrap_servers=["localhost:29092"],
+        bootstrap_servers=["kafka:9092"],
         value_serializer=lambda x: pickle.dumps(x),
         api_version=(0, 10, 2)
     )
